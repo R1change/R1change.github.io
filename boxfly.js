@@ -19,7 +19,7 @@ function calsize(box,wid,hei){
     }
     console.log("x",x);
     console.log("y",y);
-    perf=wid/30
+    perf=wid/25
     console.log("perf",perf);
     var dict={
         x:x-1,
