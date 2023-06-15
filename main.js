@@ -41,8 +41,9 @@ function start(x, y) {
         if (typeof rec[x].content == "undefined") rec[x].content = dfw[boxNum][2]
         // else rec[x].content += dfw[boxNum][2]
     }
+   let  seed = Date.now() + performance.now();
+    Math.seedrandom(seed.toString());
     var dice = Math.ceil(Math.random() * 6)
-    // dice = 4
     if (y != 0) dice = y
 
     var boxNum = rec[x].boxNum + dice
