@@ -1,94 +1,151 @@
 <!DOCTYPE html>
+
 <head>
     <meta charset="utf-8">
-    <title>飞行棋v1.1</title>
+    <title>大富翁</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="./boxfly.js"></script>
     <script src="./main.js"></script>
     <script src="./communication.js"></script>
     <script src="./dfw.js"></script>
-</head>
-<body> 
+    <style>
+        button {
+            background-color: #008CBA;
+            border: none;
+            color: white;
+            padding: 12px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #005f75;
+        }
+    </style>
+
+<body>
     <script>
-        console.log(
-`⠀⠀⣠⣤⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣤⣤⡀⠀⠀⠀⠀⠀⢀⣤⣤
-⣴⠋⠀⠀⠀⠙⣷⠀⠀⣾⠀⠀⠀⠀⠀⣦⠀⠀⣠⠛⠀⢰⠀⠈⢷⠀⠀⠀⡿⠁⠀⠀⢀⣤
-⠀⠀⢀⣠⣶⠟⠉⠀⢸⠀⠀⠀⠀⠀⠀⠈⠀⠀⡿⠀⠀⢸⠀⠀⠀⡇⠀⢸⠀⠀⣠⣾⠋⠈⠿
-⣰⠿⠋⠁⠀⠀⣀⠀⠸⣆⠀⠀⠀⠀⠀⣼⠀⠀⣿⠀⠀⢸⠀⠀⣀⠇⠀⠸⣀⠘⠋⠀⠀⢀⣄
-⠳⣦⣤⣤⠞⠉⠀⠀⠉⠳⣤⣤⣴⠞⠁⠀⠀⠀⠛⠀⠘⠀⠀⠋⠀⠀⠀⠙⢶⣤⣤⣴⠛`)
-        var wid=0.7*document.body.clientWidth
-        var calsize=calsize(dfw.length,wid,document.documentElement.clientHeight)
-        //console.log(b)
-        var boxCode=boxCodeNew(calsize.x,calsize.y,dfw.length)
-        //console.log(boxCode)
-        var boxlist=setBox (calsize.x,calsize.y,dfw,boxCode,calsize)
-        //console.log(JSON.stringify(boxlist))
+        var wid = 0.89 * document.body.clientWidth
+        var calsize = calsize(dfw.length, wid, document.documentElement.clientHeight)
+        console.log(calsize);
+        var boxCode = boxCodeNew(calsize.x, calsize.y, dfw.length)
+        console.log(boxCode);
+        var boxlist = setBox(calsize.x, calsize.y, dfw, boxCode, calsize)
+        console.log(boxlist);
         init_rec(2)
     </script>
     <div id="list">
-    <a style="background-color:#ffffff;width:70%;float:left;">
-        <template v-for="item in boxlist">
-            <div :style="item.css" style="word-break:break-all" id="item.number"><h3 style="margin-top:0%;margin-bottom:2px">{{item.number}}</h3>{{item.content}}</div>
-        </template>
-    </a>
-    <div style="background-color:#ffffff;width:29%;float:right;">
-        <div :style="{fontSize:1.4*calsize.perf+'%'}">
-        <h1>{{current.dice}}</h1>
-        <ul>
-            <template v-for="item in rec1">
-                <li style="color:rgb(161, 145, 87);word-break:break-all">跳到{{item.boxNum}}格：{{item.content}}</li>
-             </template>
-             <!--长度测试<li v-for="i in 999">test</li>-->
-        </ul>
-        <button @click="start1(1)">start1</button>
-        <ul>
-            <template v-for="item in rec2">
-                <li style="color:rgb(69, 123, 170)">跳到{{item.boxNum}}格：{{item.content}}</li>
-             </template>
-            
-        </ul>
-        <button @click="start2(2)">start2</button>
+        <a style="background-color:#ffffff;width:80%;float:left;">
+            <template v-for="item in boxlist">
+                <div :style="item.css" style="word-break:break-all" id="item.number">
+                    <h3 style="margin-top:0%;margin-bottom:2px">{{item.number}}</h3>{{item.content}}
+                </div>
+            </template>
+        </a>
+        <div style="background-color:#ffffff;width:20%;float:right;">
+            <div :style="{fontSize:1.4*calsize.perf+'%'}">
+                <h1>{{current.dice}}</h1>
+                <button style="background-color: red;" @click="restart">重新开始</button>
+                <p style="color:rgb(161, 145, 87);word-break:break-all">玩家在{{rec1.boxNum}}格 骰子结果为：{{rec1.dice}} 要求为：{{rec1.content}}</p>
+                <button @click="start1(1)">一号玩家</button>
+                <p style="color:rgb(161, 145, 87);word-break:break-all">玩家在{{rec2.boxNum}}格 骰子结果为：{{rec2.dice}} 要求为：{{rec2.content}}</p>
+                <button @click="start2(2)">二号玩家</button>
+                <!-- <div style="margin-top: 5%;">
+                    <button style="background-color: orange;" @click="select">身体卡</button> <a>部位：</a>
+                </div> -->
+                <div style="display: flex; align-items: center; margin-top: 5%;">
+                    <button style="background-color: orange; font-size: 1.2em; padding: 0.5em 1em;"
+                        @click="selectBodyPart()">身体卡</button>
+                        <a style="margin-left: 1em; font-size: 1.2em;" v-if="selectedBodyPart">{{ selectedBodyPart
+                            }}</a>
+                </div>
+
+            </div>
+
         </div>
     </div>
-    </div>
+
+
+
     <script type="module">
         //vue 
         const resultShow = {
-            data(){
-                return{
-                    boxlist:boxlist,
-                    rec1:rec[1],
-                    rec2:rec[2],
-                    rec3:rec[3],
-                    rec4:rec[4],
-                    current:{ dice: 0, boxNum: 0, content: '', done: 0 },
-                    calsize:calsize,
-                    log1:{1:1},
-                    log2:{1:1}
+            data() {
+                return {
+                    boxlist: boxlist,
+                    rec1: rec[1],
+                    rec2: rec[2],
+                    current: { dice: 0, boxNum: 0, content: '', done: 0 },
+                    calsize: calsize,
+                    log1: { 1: 1 },
+                    log2: { 1: 1 },
+                    done: 0,
+                    selectedBodyPart: null,
+                    bodyParts : ['脸部', '颈部', '胸部', '腰部', '手指', '大腿根', '阴部', '脚', '屁股', '耳朵', '腿']
                 }
             },
-            methods:{
-                start1(numm,mem){
-                    this.current=start(numm,0)
-                    //现在的格子
-                    num2XY(this.log1,boxCode,boxlist,'')
-                    num2XY(this.current,boxCode,boxlist,'cornsilk')
-                    
-                    this.log1=JSON.parse(JSON.stringify(this.current))
-                    this.$forceUpdate()     
+            methods: {
+                selectBodyPart() {
+                    const randomIndex = Math.floor(Math.random() * this.bodyParts.length);
+                    this.selectedBodyPart = this.bodyParts[randomIndex];
+                    console.log(this.selectedBodyPart);
                 },
-                start2(numm,mem){
-                    this.current=start(numm,0)
+                restart() {
+                    this.current = { dice: 0, boxNum: 0, content: '', done: 0 }
+                    this.done = 0
+                    this.selectedBodyPart = null
+                    num2XY(this.log1, boxCode, boxlist, '')
+                    num2XY(this.log2, boxCode, boxlist, '')
+                    init_rec(2)
+                },
+                start1(numm, mem) {
+                    if (this.done === 1) {
+                        alert('请重置游戏！')
+                        return;
+                    }
+                    this.current = start(numm, 0)
                     //现在的格子
-                    num2XY(this.log2,boxCode,boxlist,'')
-                    num2XY(this.current,boxCode,boxlist,'aliceblue')
-                    
-                    this.log2=JSON.parse(JSON.stringify(this.current))
-                    this.$forceUpdate()     
-                }
+                    num2XY(this.log1, boxCode, boxlist, '')
+                    num2XY(this.current, boxCode, boxlist, 'cornsilk')
+                    this.log1 = JSON.parse(JSON.stringify(this.current))
+                    this.rec1 = rec[1]
+                    this.$forceUpdate()
+                    if (this.rec1.done === 1) {
+                        this.done = 1
+                        setTimeout(() => {
+                            alert('一号玩家获胜！')
+                        }, 0)
+                    }
+                },
+                start2(numm, mem) {
+                    if (this.done === 1) {
+                        alert('请重置游戏！')
+                        return;
+                    }
+                    this.current = start(numm, 0)
+                    //现在的格子
+                    num2XY(this.log2, boxCode, boxlist, '')
+                    num2XY(this.current, boxCode, boxlist, 'aliceblue')
+                    this.log2 = JSON.parse(JSON.stringify(this.current))
+                    this.rec2 = rec[2]
+                    this.$forceUpdate()
+                    if (this.rec2.done === 1) {
+                        setTimeout(() => {
+                            this.done = 1
+                            alert('二号玩家获胜！')
+                        }, 0)
+                    }
+                },
 
-            }
+            },
+
         }
         Vue.createApp(resultShow).mount('#list')
     </script>
+
 </body>
