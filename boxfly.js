@@ -1,5 +1,4 @@
-//document.body.clientWidth
-//保留两位小数，只舍不入
+
 function float2(n,x){
     x=Math.floor(x*10**n)/10**n
     return x
@@ -13,12 +12,15 @@ function calsize(box,wid,hei){
         w=0
         perX=float2(5,(1-(pad/wid+bor/wid)*(2*x))/x)
         pxY=perX*wid/4*3
-        y=Math.floor(hei/(pxY+(pad+bor)*2))
+        y=Math.floor(hei/(pxY+(pad+bor)*1))
         w=Object.getOwnPropertyNames(boxCodeNew(x,y,box)).length
         ++x
     //console.log(perX)
     }
-    perf=wid/17
+    console.log("x",x);
+    console.log("y",y);
+    perf=wid/50
+    console.log("perf",perf);
     var dict={
         x:x-1,
         y:y,
@@ -49,6 +51,7 @@ function setBox(x,y,dfw,boxCode,calsize){
                     padding:calsize.pad+'px',
                     float:'left',
                     fontSize : calsize.perf+'%'
+                    // fontSize : '5%'
                 } 
             }
             else{
@@ -58,7 +61,7 @@ function setBox(x,y,dfw,boxCode,calsize){
                     border:calsize.bor+'px'+' solid rgb(255, 255, 255)',
                     padding:calsize.pad+'px',
                     float:'left',
-                    fontSize : calsize.perf+'%'
+                    fontSize : '80%'
                 }
 
             }
@@ -66,55 +69,6 @@ function setBox(x,y,dfw,boxCode,calsize){
     }
     console.log(boxList)
     return boxList
-}
-//批量给css的dict赋值
-function setcss(x,y,dict,ob){
-    for(b=1;b<=y;++b){
-        for(a=1;a<=x;++a){
-            dict[`styleObject${a}_${b}`]=ob
-        }
-    }
-}
-//给格子编号 已经不用啦，但是感觉也是一种方向
-function boxCode(x,y,l){
-    var boxCodes={}
-    x1=x
-    y1=y
-    var n=1,p=0
-    do{
-        for(i=x1;i>1;--i){
-            if(n>l)break;
-            a=i+2*p
-            b=y1+2*p
-            boxCodes[`${a}_${b}`]=n
-            ++n
-        }
-        for(i=y1;i>1;--i){
-            if(n>l)break;
-            a=1+2*p
-            b=i+2*p
-            boxCodes[`${a}_${b}`]=n
-            ++n
-        }
-        for(i=1;i<x1;++i){
-            if(n>l)break;
-            a=i+2*p
-            b=1+2*p
-            boxCodes[`${a}_${b}`]=n
-            ++n
-        }
-        for(i=1;i<y1-1;++i){
-            if(n>l)break;
-            a=x1+2*p
-            b=i+2*p
-            boxCodes[`${a}_${b}`]=n
-            ++n
-        }
-        x1-=4
-        y1-=4
-        ++p
-    }while(x1>=7&&y1>=7)
-    return boxCodes
 }
 //新的boxcode
 function boxCodeNew(x0,y0,l){
@@ -145,8 +99,6 @@ function boxCodeNew(x0,y0,l){
     x=x0
     y=y0
     write()
-    //条件判断方向
-    //console.log(n,l)
     var t=0
     while(n<=l&&y0-2*t>=1+2*t){
         do{
@@ -162,13 +114,3 @@ function boxCodeNew(x0,y0,l){
     }
     return boxCodes
 }
-//调试
-//var dfw={1:["stay",0,111],2:["stay",0,222],3:["move",1,333],4:["stay",1,444],5:["stay",0,555],6:["stay",0,666],length:6}
-
-//var calsize=calsize(12,1024,1024)
-//console.log(calsize)
-
-//var boxCode=boxCode(calX[0],calX[1],dfw.length)
-//console.log(boxCode)
-//var d=setBox(calX[0],calX[1],dfw,boxCode,calsize)
-//console.log(JSON.stringify(d))
